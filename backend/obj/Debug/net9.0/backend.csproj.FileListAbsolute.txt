@@ -164,3 +164,5 @@
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/AutoMapper.dll
+/Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll

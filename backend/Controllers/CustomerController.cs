@@ -38,6 +38,20 @@ namespace Backend.Controllers
             return Ok(customer);
         }
 
+        [HttpGet("/list/dto")]
+        public async Task<IActionResult> GetAllDtoCustomers()
+        {
+            var result = await _service.GetAllDtoCustomers();
+            return Ok(result);
+        }
+
+        [HttpGet("/get/dto/{id:guid}")]
+        public async Task<IActionResult> GetDtoCustomerById(Guid id)
+        {
+            var result = await _service.GetDtoCustomerById(id);
+            return Ok(result);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create(Customer customer)
         {

@@ -1,4 +1,5 @@
 using Backend.Models;
+using Backend.Dto;
 
 namespace Backend.Services
 {
@@ -9,5 +10,8 @@ namespace Backend.Services
         Task AddAsync(Customer customer);
         Task UpdateAsync(Guid id, Customer updatedCustomer);
         Task DeleteAsync(Guid id);
+        Task<IEnumerable<CustomerDto>> GetAllDtoCustomers();
+        Task<CustomerDto?> GetDtoCustomerById(Guid id);
+
     }
 }

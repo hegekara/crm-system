@@ -1,3 +1,5 @@
+using AutoMapper;
+using Backend.Dto;
 using Backend.Models;
 using Backend.Repositories;
 
@@ -6,10 +8,12 @@ namespace Backend.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CustomerService(ICustomerRepository repository)
+        public CustomerService(ICustomerRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Customer>> GetAllAsync()
@@ -48,6 +52,18 @@ namespace Backend.Services
         public async Task DeleteAsync(Guid id)
         {
             await _repository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<CustomerDto>> GetAllDtoCustomers()
+        {
+            var customers = await _repository.GetAllAsync();
+            return _mapper.Map<IEnumerable<CustomerDto>>(customers);
+        }
+
+        public async Task<CustomerDto?> GetDtoCustomerById(Guid id)
+        {
+            var customer = await _repository.GetByIdAsync(id);
+            return _mapper.Map<CustomerDto?>(customer);
         }
     }
 }
