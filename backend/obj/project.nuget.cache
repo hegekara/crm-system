@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "pY3woc+4SDE=",
+  "success": true,
+  "projectFilePath": "/Users/egekara/Desktop/staj/08-310725/crm-system/backend/backend.csproj",
+  "expectedPackageFiles": [
+    "/Users/egekara/.nuget/packages/microsoft.aspnetcore.openapi/9.0.7/microsoft.aspnetcore.openapi.9.0.7.nupkg.sha512",
+    "/Users/egekara/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
