@@ -1,5 +1,5 @@
 using Backend.Data;
-using Backend.Models;
+using Backend.Middlewares;
 using Backend.Repositories;
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -33,5 +33,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();

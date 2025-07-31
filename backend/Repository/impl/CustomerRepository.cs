@@ -23,9 +23,9 @@ namespace Backend.Repositories
             return await _context.Customers.FindAsync(id);
         }
 
-        public async Task AddAsync(Customer product)
+        public async Task AddAsync(Customer customer)
         {
-            _context.Customers.Add(product);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
         }
 
@@ -36,10 +36,10 @@ namespace Backend.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var product = await _context.Customers.FindAsync(id);
-            if (product != null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer != null)
             {
-                _context.Customers.Remove(product);
+                _context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();
             }
         }

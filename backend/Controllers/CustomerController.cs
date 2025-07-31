@@ -27,7 +27,7 @@ namespace Backend.Controllers
             return Ok(customers);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("get/{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var customer = await _service.GetByIdAsync(id);
@@ -38,14 +38,14 @@ namespace Backend.Controllers
             return Ok(customer);
         }
 
-        [HttpGet("/list/dto")]
+        [HttpGet("list/dto")]
         public async Task<IActionResult> GetAllDtoCustomers()
         {
             var result = await _service.GetAllDtoCustomers();
             return Ok(result);
         }
 
-        [HttpGet("/get/dto/{id:guid}")]
+        [HttpGet("get/dto/{id:guid}")]
         public async Task<IActionResult> GetDtoCustomerById(Guid id)
         {
             var result = await _service.GetDtoCustomerById(id);
