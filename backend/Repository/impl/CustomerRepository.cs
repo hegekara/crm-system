@@ -29,6 +29,11 @@ namespace Backend.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var product = await _context.Customers.FindAsync(id);

@@ -161,3 +161,6 @@
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/obj/Debug/net9.0/backend.pdb
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/obj/Debug/net9.0/backend.genruntimeconfig.cache
 /Users/egekara/Desktop/staj/08-310725/crm-system/backend/obj/Debug/net9.0/ref/backend.dll
+/Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/egekara/Desktop/staj/08-310725/crm-system/backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
