@@ -24,7 +24,39 @@ const CreateCustomer = () => {
         });
     };
 
+    const checkUserValidation = () => {
+
+        const isOnlyDigits = (str, length) => {
+            if (str.length !== length) return false;
+            for (let char of str) {
+                if (isNaN(char) || char === ' ') return false;
+            }
+            return true;
+        };
+
+        if (!isOnlyDigits(customer.tckn, 11)) {
+            setError("TCKN 11 haneli ve sadece rakamlardan oluşmalıdır.");
+            return false;
+        }
+
+        if (!isOnlyDigits(customer.phoneNumber, 11)) {
+            setError("Telefon numarası 11 haneli ve sadece rakamlardan oluşmalıdır.");
+            return false;
+        }
+
+        setError(null);
+        return true;
+    };
+
+
     const handleCreate = async () => {
+        setError(null)
+        setSuccess(null)
+        if(!checkUserValidation()){
+            alert("Geçersiz alan var");
+            return;
+        } 
+        
         try {
             const response = await apiFetch(`/api/customer/create`, {
                 method: 'POST',
@@ -42,7 +74,10 @@ const CreateCustomer = () => {
                     businessAddress: ''
                 });
             } else {
-                throw new Error(`Müşteri oluşturulamadı: ${response.status}`);
+                if(response.status == 400){
+                    throw new Error(`Müşteri oluşturulamadı: Geçersiz Alan`);
+                }
+                
             }
         } catch (err) {
             setError(err.message);
