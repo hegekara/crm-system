@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import CustomerList from './pages/Customer/CustomerList';
+import CreateCustomer from './pages/Customer/CustomerCreate';
 
 createRoot(document.getElementById('root')).render(
   <>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<Home />} />
 
         <Route path="/customers" element={<CustomerList />} />
+        <Route path="/create-customer" element={<CreateCustomer />} />
       </Routes>
     </BrowserRouter>
   </>

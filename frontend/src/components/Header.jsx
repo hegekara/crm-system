@@ -16,6 +16,9 @@ const Header = () => {
                             <a className="nav-link text-dark" href="/customers">Müşteriler</a>
                         </li>
                         <li className="nav-item">
+                            <a className="nav-link text-dark" href="/create-customer">Müşteri Oluştur</a>
+                        </li>
+                        <li className="nav-item">
                             <a className="nav-link text-dark" href="/users">Kullanıcılar</a>
                         </li>
                     </ul>
