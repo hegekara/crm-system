@@ -1,26 +1,33 @@
 const BASE_URL = "http://localhost:5085";
 
 export const apiFetch = async (endpoint, options = {}) => {
+  const defaultHeaders = {
+    "Content-Type": "application/json"
+  };
 
-    const defaultHeaders = {
-        "Content-Type": "application/json"
-    };
+  const config = {
+    method: options.method || "GET",
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+    ...(options.body && { body: JSON.stringify(options.body) }),
+  };
 
-    const config = {
-        method: options.method || "GET",
-        headers: {
-            ...defaultHeaders,
-            ...options.headers,
-        },
-        ...(options.body && { body: JSON.stringify(options.body) }),
-    };
+  const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  const contentType = response.headers.get("Content-Type");
+  let data = null;
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || "Bir hata oluştu");
-    }
+  if (contentType && contentType.includes("application/json")) {
+    data = await response.json();
+  } else {
+    data = await response.text();
+  }
 
-    return await response.json();
+  return {
+    status: response.status,
+    ok: response.ok,
+    data,
+  };
 };
