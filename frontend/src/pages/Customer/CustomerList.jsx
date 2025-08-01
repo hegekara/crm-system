@@ -14,8 +14,12 @@ const CustomerList = () => {
     const fetchCustomers = async () => {
         try {
             const response = await apiFetch("/api/customer/list/dto");
-            if (response.ok) {
+            console.log(response);
+
+            if (response.status == 200) {
                 setCustomers(response.data);
+            } else if (response.status == 204) {
+                setError("Müşteri Bulunamadı")
             } else {
                 throw new Error(`Hata kodu: ${response.status}`);
             }
@@ -27,14 +31,14 @@ const CustomerList = () => {
     const fetchCustomerById = async (id, forEdit = false) => {
         try {
             const response = await apiFetch(`/api/customer/get/${id}`);
-            if (response.ok) {
-                console.log(response.data);
-                
+            if (response.status == 200) {
                 setSelectedCustomer(response.data);
                 setIsEdit(forEdit);
                 setShowModal(true);
+            } else if (response.status == 204) {
+                setError("Müşteri Bulunamadı")
             } else {
-                throw new Error(`Müşteri alınamadı: ${response.status}`);
+                throw new Error(`Hata kodu: ${response.status}`);
             }
         } catch (err) {
             setError(err.message);
@@ -46,27 +50,65 @@ const CustomerList = () => {
             const response = await apiFetch(`/api/customer/delete/${id}`, {
                 method: 'DELETE',
             });
-            if (response.ok) {
+            if (response.status == 200) {
                 fetchCustomers();
+            } else if (response.status == 204) {
+                setError("Müşteri Bulunamadı")
             } else {
-                throw new Error(`Silme hatası: ${response.status}`);
+                throw new Error(`Hata kodu: ${response.status}`);
             }
         } catch (err) {
             setError(err.message);
         }
     };
 
+
+    const checkUserValidation = () => {
+        const isOnlyDigits = (str, length) => {
+            if (str.length !== length) return false;
+            for (let char of str) {
+                if (isNaN(char) || char === ' ') return false;
+            }
+            return true;
+        };
+
+        if (!isOnlyDigits(selectedCustomer.tckn, 11)) {
+            setError("TCKN 11 haneli ve sadece rakamlardan oluşmalıdır.");
+            return false;
+        }
+
+        if (!isOnlyDigits(selectedCustomer.phoneNumber, 11)) {
+            setError("Telefon numarası 11 haneli ve sadece rakamlardan oluşmalıdır.");
+            return false;
+        }
+
+        setError(null);
+        return true;
+    };
+
+
+
+
+
     const handleUpdate = async () => {
+        setError(null);
+
+        if (!checkUserValidation()) {
+            alert("Geçersiz alan var");
+            return;
+        }
+
         try {
             const response = await apiFetch(`/api/customer/update/${selectedCustomer.id}`, {
                 method: 'PUT',
                 body: selectedCustomer,
             });
+
             if (response.ok) {
                 setShowModal(false);
                 fetchCustomers();
             } else {
-                throw new Error(`Güncelleme hatası: ${response.status}`);
+                throw new Error(`Hata kodu: ${response.status}`);
             }
         } catch (err) {
             setError(err.message);
@@ -128,11 +170,17 @@ const CustomerList = () => {
                                     </button>
                                     <button
                                         className="btn btn-sm btn-outline-danger"
-                                        onClick={() => handleDelete(customer.id)}
+                                        onClick={() => {
+                                            const confirmed = window.confirm("Bu müşteriyi silmek istediğinize emin misiniz?");
+                                            if (confirmed) {
+                                                handleDelete(customer.id);
+                                            }
+                                        }}
                                         title="Sil"
                                     >
                                         <i className="bi bi-trash"></i>
                                     </button>
+
                                 </td>
                             </tr>
                         ))}
@@ -143,7 +191,7 @@ const CustomerList = () => {
 
 
 
-    {/* modal section*/ }
+            {/* modal section*/}
             {showModal && selectedCustomer && (
                 <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">

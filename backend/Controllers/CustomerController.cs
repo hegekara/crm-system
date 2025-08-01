@@ -19,11 +19,12 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var customers = await _service.GetAllAsync();
-            if (customers == null)
+
+            if (customers == null || !customers.Any())
             {
                 return NoContent();
-                
             }
+
             return Ok(customers);
         }
 
@@ -33,16 +34,22 @@ namespace Backend.Controllers
             var customer = await _service.GetByIdAsync(id);
             if (customer == null)
             {
-                return NoContent();  
-            } 
+                return NoContent();
+            }
             return Ok(customer);
         }
 
         [HttpGet("list/dto")]
         public async Task<IActionResult> GetAllDtoCustomers()
         {
-            var result = await _service.GetAllDtoCustomers();
-            return Ok(result);
+            var customers = await _service.GetAllDtoCustomers();
+
+            if (customers == null || !customers.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(customers);
         }
 
         [HttpGet("get/dto/{id:guid}")]
@@ -63,7 +70,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Update(Guid id, Customer updatedCustomer)
         {
             var existing = await _service.GetByIdAsync(id);
-            if (existing == null) return NotFound();
+            if (existing == null) return NoContent();
 
             await _service.UpdateAsync(id, updatedCustomer);
             return Ok();
@@ -73,7 +80,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var existing = await _service.GetByIdAsync(id);
-            if (existing == null) return NotFound();
+            if (existing == null) return NoContent();
 
             await _service.DeleteAsync(id);
             return Ok();
