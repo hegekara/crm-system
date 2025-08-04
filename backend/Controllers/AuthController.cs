@@ -1,36 +1,63 @@
 using Backend.Dto;
+using Backend.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/auth")]
-public class AuthController : ControllerBase
+namespace Backend.Controllers
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public AuthController(UserManager<ApplicationUser> userManager)
+    [ApiController]
+    [Route("api/auth")]
+    public class AuthController : ControllerBase
     {
-        _userManager = userManager;
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _config;
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
-    {
-        var user = new ApplicationUser
+        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config)
         {
-            UserName = dto.Username,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            PhoneNumber = dto.PhoneNumber,
-            Email = dto.Email,
-        };
-        var result = await _userManager.CreateAsync(user, dto.Password);
+            _userManager = userManager;
+            _config = config;
+        }
 
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterDto dto)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = dto.Username,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                PhoneNumber = dto.PhoneNumber,
+                Email = dto.Email,
+            };
+            var result = await _userManager.CreateAsync(user, dto.Password);
 
-        await _userManager.AddToRoleAsync(user, "User");
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
 
-        return Ok("Kayıt başarılı");
+            await _userManager.AddToRoleAsync(user, "User");
+            
+            var roles = await _userManager.GetRolesAsync(user);
+            var token = JwtGenerator.GenerateToken(user, roles, _config);
+
+            return Ok(new AuthResponseDto { id = user.Id, token = token, message = "Kayıt Başarılı" });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto dto)
+        {
+            var user = await _userManager.FindByNameAsync(dto.Username);
+            if (user == null)
+                return Unauthorized("Kullanıcı bulunamadı");
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
+            if (!passwordValid)
+                return Unauthorized("Şifre yanlış");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var token = JwtGenerator.GenerateToken(user, roles, _config);
+
+            return Ok(new AuthResponseDto{ id = user.Id, token = token, message="Giriş Başarılı"});
+        }
     }
 }
