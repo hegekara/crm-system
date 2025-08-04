@@ -11,6 +11,7 @@ import CreateCustomer from './pages/Customer/CustomerCreate';
 import Login from './pages/Auth/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserList from './pages/User/UserList';
+import UserCreate from './pages/User/UserCreate';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -46,8 +47,16 @@ createRoot(document.getElementById('root')).render(
           <UserList />
         </ProtectedRoute>
       } />
+    <Route path="/user-create" element={
+        <ProtectedRoute>
+          <UserCreate />
+        </ProtectedRoute>
+      } />
+
+
+
+
+
     </Routes>
-
-
   </BrowserRouter>
 );

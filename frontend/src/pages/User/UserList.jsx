@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { apiFetch } from '../../api';
 import Header from '../../components/Header';
+import { useNavigate } from 'react-router-dom';
 
 function UserList() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     const fetchUsers = async () => {
         try {
@@ -43,7 +45,10 @@ function UserList() {
         <>
             <Header />
             <div className="container mt-4">
-                <h2 className="mb-4">Kullanıcı Listesi</h2>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Kullanıcı Listesi</h2>
+                    <button className="btn btn-primary" onClick={() => navigate('/user-create')}>Kullanıcı Oluştur</button>
+                </div>
                 <table className="table table-bordered table-striped">
                     <thead className="table-dark">
                         <tr className="text-center">
