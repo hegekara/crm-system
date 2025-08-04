@@ -1,8 +1,11 @@
 const BASE_URL = "http://localhost:5085";
 
 export const apiFetch = async (endpoint, options = {}) => {
+  const token = localStorage.getItem("token");
+
   const defaultHeaders = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    ...(token ? { "Authorization": `Bearer ${token}` } : {})
   };
 
   const config = {
