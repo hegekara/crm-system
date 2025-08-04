@@ -27,7 +27,7 @@ function UserCreate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await apiFetch("/api/user/create", {
+            const response = await apiFetch("/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
