@@ -58,7 +58,7 @@ namespace YourNamespace.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
-                return NotFound("Kullanıcı bulunamadı");
+                return NoContent();
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
