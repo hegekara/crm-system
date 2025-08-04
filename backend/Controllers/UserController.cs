@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Backend.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YourNamespace.Controllers
 {
@@ -19,6 +20,7 @@ namespace YourNamespace.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("list")]
         public IActionResult GetUsers()
         {
@@ -34,6 +36,7 @@ namespace YourNamespace.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterDto dto)
         {
@@ -53,6 +56,7 @@ namespace YourNamespace.Controllers
             return Ok("Kullanıcı başarıyla oluşturuldu");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
