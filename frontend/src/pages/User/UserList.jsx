@@ -62,7 +62,7 @@ function UserList() {
                     <tbody>
                         {users.length === 0 ? (
                             <tr>
-                                <td colSpan="4" className="text-center">Kullanıcı bulunamadı</td>
+                                <td colSpan="6" className="text-center">Kullanıcı bulunamadı</td>
                             </tr>
                         ) : (
                             users.map(user => (

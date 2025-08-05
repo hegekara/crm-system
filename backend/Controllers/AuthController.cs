@@ -7,6 +7,7 @@ using Serilog;
 namespace Backend.Controllers
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
@@ -20,7 +21,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             var user = new ApplicationUser
             {
@@ -30,41 +31,51 @@ namespace Backend.Controllers
                 PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email,
             };
+
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
             {
-                Log.Warning("User can not be created {User} - Invalid User Creating Attempt", dto);
+                Log.Warning("Kayıt başarısız: {@Errors} | Kullanıcı: {@User}", result.Errors, dto);
                 return BadRequest(result.Errors);
             }
-                
+
             await _userManager.AddToRoleAsync(user, "User");
-            
+
             var roles = await _userManager.GetRolesAsync(user);
             var token = JwtGenerator.GenerateToken(user, roles, _config);
 
-            return Ok(new AuthResponseDto { id = user.Id, token = token, message = "Kayıt Başarılı" });
+            return Ok(new AuthResponseDto
+            {
+                id = user.Id,
+                token = token,
+                message = "Kayıt başarılı"
+            });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var user = await _userManager.FindByNameAsync(dto.Username);
             if (user == null)
-                return Unauthorized("Kullanıcı bulunamadı");
+                return NotFound("Kullanıcı bulunamadı");
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!passwordValid)
             {
-                Log.Warning("Incorrect Password {Username} - Invalid Login Attempt", dto.Username);
-                return Unauthorized("Şifre yanlış");   
+                Log.Warning("Giriş reddedildi - Hatalı şifre: {@Username}", dto.Username);
+                return Unauthorized("Şifre yanlış");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-
             var token = JwtGenerator.GenerateToken(user, roles, _config);
 
-            return Ok(new AuthResponseDto{ id = user.Id, token = token, message="Giriş Başarılı"});
+            return Ok(new AuthResponseDto
+            {
+                id = user.Id,
+                token = token,
+                message = "Giriş Başarılı"
+            });
         }
     }
 }

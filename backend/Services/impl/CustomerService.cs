@@ -53,8 +53,11 @@ namespace Backend.Services
         public async Task DeleteAsync(Guid id)
         {
             var customer = await _repository.GetByIdAsync(id);
-            Log.Warning("User Deleted - ID: {Id} - {FirstName} {LastName}", id, customer.FirstName, customer.LastName);
-            await _repository.DeleteAsync(id);
+            if (customer != null)
+            {
+                await _repository.DeleteAsync(id);
+                Log.Warning("Customer Deleted - ID: {Id} - {FirstName} {LastName}", id, customer.FirstName, customer.LastName);
+            }
         }
 
         public async Task<IEnumerable<CustomerDto>> GetAllDtoCustomers()

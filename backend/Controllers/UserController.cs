@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using Backend.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
+using Backend.Dto;
 
 namespace Backend.Controllers
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
@@ -37,25 +34,7 @@ namespace Backend.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateUser([FromBody] RegisterDto dto)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = dto.Username,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-            };
-            var result = await _userManager.CreateAsync(user, dto.Password);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return Ok("Kullanıcı başarıyla oluşturuldu");
-        }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
@@ -63,13 +42,16 @@ namespace Backend.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
-                return NoContent();
+                return NotFound("Kullanıcı bulunamadı");
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
+            {
+                Log.Error("Kullanıcı silinemedi: {@Errors}", result.Errors);
                 return BadRequest(result.Errors);
+            }
 
-            Log.Warning("User Deleted - ID: {Id} - {FirstName} {LastName}", id, user.FirstName, user.LastName);
+            Log.Warning("Kullanıcı silindi - ID: {Id} - {FirstName} {LastName}", id, user.FirstName, user.LastName);
             return Ok("Kullanıcı silindi");
         }
     }
