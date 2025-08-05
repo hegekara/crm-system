@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            setError(null);
             const response = await apiFetch("/api/auth/login", {
                 method: "POST",
                 body: {
@@ -27,8 +29,11 @@ function Login() {
                 localStorage.setItem('token', token);
 
                 navigate("/home");
-            } else if (response.status === 204) {
+            } else if (response.status === 404) {
+                setError("Kullanıcı bulunamadı");
                 console.log("Kullanıcı bulunamadı.");
+            } else if (response.status === 401) {
+                setError("Kullanıcı adı veya şifre hatalı");
             } else {
                 throw new Error(`Hata kodu: ${response.status}`);
             }
@@ -54,6 +59,8 @@ function Login() {
                     </div>
                     <button type="submit" className="btn btn-primary w-100">Login</button>
                 </form>
+                <br />
+                {error && <div className="alert alert-danger">{error}</div>}
             </div>
         </div>
     );
