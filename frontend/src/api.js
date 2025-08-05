@@ -5,6 +5,7 @@ export const apiFetch = async (endpoint, options = {}) => {
 
   const defaultHeaders = {
     "Content-Type": "application/json",
+    "X-API-Version": "1.0",
     ...(token ? { "Authorization": `Bearer ${token}` } : {})
   };
 

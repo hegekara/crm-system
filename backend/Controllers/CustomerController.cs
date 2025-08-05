@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/customer")]
     public class CustomersController : ControllerBase
     {
