@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.IO.Compression;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -29,7 +31,24 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.ReportApiVersions = true;
-    options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version"); 
+    options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
+});
+
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = false;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+// Opsiyonel: sıkıştırma seviyeleri
+builder.Services.Configure<BrotliCompressionProviderOptions>(o =>
+{
+    o.Level = CompressionLevel.Fastest;
+});
+builder.Services.Configure<GzipCompressionProviderOptions>(o =>
+{
+    o.Level = CompressionLevel.Fastest;
 });
 
 
@@ -106,12 +125,14 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("allowedOrigin");
 
+app.UseResponseCompression();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
