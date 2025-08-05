@@ -2,6 +2,7 @@ using Backend.Dto;
 using Backend.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Backend.Controllers
 {
@@ -32,8 +33,11 @@ namespace Backend.Controllers
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
+            {
+                Log.Warning("User can not be created {User} - Invalid User Creating Attempt", dto);
                 return BadRequest(result.Errors);
-
+            }
+                
             await _userManager.AddToRoleAsync(user, "User");
             
             var roles = await _userManager.GetRolesAsync(user);
@@ -51,7 +55,10 @@ namespace Backend.Controllers
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!passwordValid)
-                return Unauthorized("Şifre yanlış");
+            {
+                Log.Warning("Incorrect Password {Username} - Invalid Login Attempt", dto.Username);
+                return Unauthorized("Şifre yanlış");   
+            }
 
             var roles = await _userManager.GetRolesAsync(user);
 

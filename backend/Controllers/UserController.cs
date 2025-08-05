@@ -6,8 +6,9 @@ using System.Linq;
 using System;
 using Backend.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Serilog;
 
-namespace YourNamespace.Controllers
+namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/user")]
@@ -68,6 +69,7 @@ namespace YourNamespace.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
+            Log.Warning("User Deleted - ID: {Id} - {FirstName} {LastName}", id, user.FirstName, user.LastName);
             return Ok("Kullanıcı silindi");
         }
     }

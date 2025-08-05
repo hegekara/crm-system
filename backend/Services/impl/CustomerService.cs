@@ -2,6 +2,7 @@ using AutoMapper;
 using Backend.Dto;
 using Backend.Models;
 using Backend.Repositories;
+using Serilog;
 
 namespace Backend.Services
 {
@@ -51,6 +52,8 @@ namespace Backend.Services
 
         public async Task DeleteAsync(Guid id)
         {
+            var customer = await _repository.GetByIdAsync(id);
+            Log.Warning("User Deleted - ID: {Id} - {FirstName} {LastName}", id, customer.FirstName, customer.LastName);
             await _repository.DeleteAsync(id);
         }
 
