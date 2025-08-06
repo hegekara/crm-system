@@ -41,7 +41,6 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<GzipCompressionProvider>();
 });
 
-// Opsiyonel: sıkıştırma seviyeleri
 builder.Services.Configure<BrotliCompressionProviderOptions>(o =>
 {
     o.Level = CompressionLevel.Fastest;
